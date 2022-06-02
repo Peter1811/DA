@@ -1,37 +1,49 @@
 #include <iostream>
+#include "TTree.h"
 
-#include "Tree.h"
+std::string ToLower(std::string& string) {
+    for (unsigned i = 0; i < string.length(); ++i) {
+        string[i] = std::tolower(string[i]);
+    }
+    return string;
+}
 
 int main() {
-    Tree* MyTree = new Tree();
+    TTree MyTree;
+    std::string command;
+    std::string str;
+    unsigned long long value;
+    while (std::cin >> command) {
+        if (command == "+") {
+            std::cin >> str >> value;
+            std::string new_str = ToLower(str);
+            MyTree.InsertElement(new_str, value);
+        } else if (command == "-") {
+            std::cin >> str;
+            std::string new_str = ToLower(str);
+            MyTree.Remove(new_str);
+        } else if (command == "!") {
+            std::string key;
+            std::cin >> key;
+            if (key == "Save") {
+                std::string path;
+                std::cin >> path;
+                MyTree.Write(path);
+            } else if (key == "Load") {
+                TTree copy;
+                std::string path;
+                std::cin >> path;
+                MyTree.Clear(MyTree.GetRoot());
+                MyTree.SetRoot();
+                MyTree.Read(path);
+            }
+	        std::cout << "OK\n";
+        } else {
+            std::string new_str = ToLower(command);
+            MyTree.SearchOfItem(new_str);
+            }
 
-    unsigned long long value = 123;
-    std::string str_a, str_b, str_c;
-
-//    while (std::cin >> str >> value) {
-//        MyTree->InsertElement(str, value);
-//        TItemOfTree::PrintItem(MyTree->GetRoot());
-//        std::cout << MyTree->GetRoot()->GetBalance() << std::endl;
-//    }
-//
-//    TItemOfTree::PrintItem(MyTree->GetRoot());
-
-    str_a = "a";
-    str_b = "b";
-    str_c = "c";
-    MyTree->InsertElement(str_a, value);
-    std::cout << MyTree->GetRoot()->GetBalance() << std::endl;
-    MyTree->InsertElement(str_b, value);
-    std::cout << MyTree->GetRoot()->GetBalance() << std::endl;
-    MyTree->InsertElement(str_c, value);
-    std::cout << MyTree->GetRoot()->GetBalance() << std::endl;
-
-    TItemOfTree::PrintItem(MyTree->GetRoot());
-
-    MyTree->Print(MyTree->GetRoot());
-    std::cout << std::endl;
-
-    MyTree->Clear(MyTree->GetRoot());
-    delete MyTree;
+        }
+    MyTree.Clear(MyTree.GetRoot());
     return 0;
 }
